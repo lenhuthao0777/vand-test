@@ -14,12 +14,17 @@ defineEmits(['close-modal']);
       v-show="props.modalActive"
       class="fixed top-0 left-0 bottom-0 w-full flex items-center justify-center bg-black bg-opacity-30"
     >
-      <Spinner v-if="props.isLoading" class="bg-black bg-opacity-20 absolute top-0 left-0 bottom-0 w-full h-full" />
+      <Spinner
+        v-if="props.isLoading"
+        class="bg-black bg-opacity-20 absolute top-0 left-0 bottom-0 w-full h-full"
+      />
 
       <Transition name="modal-inner" v-if="props.modalActive && !isLoading">
         <div class="bg-white max-w-screen-md rounded-md">
           <slot />
-          <div class="flex items-center justify-end p-5 border-t border-gray-300">
+          <div
+            class="flex items-center justify-end p-5 border-t border-gray-300"
+          >
             <button
               @click="$emit('close-modal')"
               class="px-2 py-1 bg-rose-600 text-sm text-white rounded-md hover:bg-rose-600/90 transition"

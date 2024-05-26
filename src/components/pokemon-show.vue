@@ -19,7 +19,7 @@ const isLoading = ref(false);
 
 const color = getColor(String(props.pokemon.type_1));
 
-const modalActive = inject('modalActive');
+const modalActive = inject<boolean>('modalActive');
 
 const getPokemon = async () => {
   isLoading.value = true;
@@ -40,7 +40,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <Modal :modal-active="modalActive" :is-loading="isLoading">
+  <Modal :modal-active="!!modalActive" :is-loading="isLoading">
     <div
       v-if="!isLoading"
       class="rounded-t-md relative max-w-96 w-96"
@@ -69,7 +69,7 @@ onMounted(() => {
             <tr>
               <th class="w-40 text-sm font-extrabold">Type:</th>
               <td>
-                <Type :type="[props.pokemon.type_1, props.pokemon.type_2]" />
+                <Type :type="[props.pokemon?.type_1, props.pokemon?.type_2]" />
               </td>
             </tr>
             <tr>

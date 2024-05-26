@@ -18,7 +18,7 @@ import dragon from '../assets/types/dragon.svg';
 import steel from '../assets/types/steel.svg';
 import fairy from '../assets/types/fairy.svg';
 
-defineProps<{ type: Array<number> }>();
+defineProps<{ type: Array<number | undefined> }>();
 
 const types = [
   {
