@@ -12,8 +12,8 @@ import Spinner from './common/spinner.vue';
 import Pagination from './pagination.vue';
 
 type QueryStringParameter = {
-  'page[size]'?: number;
-  'page[number]'?: number;
+  'page[size]': number;
+  'page[number]': number;
   sort?: string;
   'filter[type]'?: string;
 };
@@ -40,6 +40,12 @@ const getPokemons = async () => {
     ).toString();
     const res = await PokemonApi.index<Pokemons>(decodeURI(searchParams));
     pokemonResponse.value = res.payload;
+    const totalPage = Math.ceil(
+      res.payload.meta.total / queryStringParameter['page[size]']
+    );
+    if (totalPage < queryStringParameter['page[number]']) {
+      queryStringParameter['page[number]'] = 1;
+    }
   } catch (error) {
     console.log(error);
   } finally {
@@ -60,7 +66,6 @@ const getPokemonType = async () => {
 };
 
 onMounted(() => {
-  getPokemons();
   getPokemonType();
 });
 
@@ -144,13 +149,15 @@ const sortSelect = [
   },
 ];
 
-const handleChange = () => {
-  queryStringParameter['page[number]'] = 1;
-};
-
-watch(queryStringParameter, () => {
-  getPokemons();
-});
+watch(
+  queryStringParameter,
+  () => {
+    getPokemons();
+  },
+  {
+    immediate: true,
+  }
+);
 </script>
 
 <template>
@@ -165,7 +172,6 @@ watch(queryStringParameter, () => {
             :default-value="queryStringParameter['filter[type]']"
             :is-loading="isLoadingType"
             v-model:select-model="queryStringParameter['filter[type]']"
-            @on-change="handleChange"
           />
         </div>
 
@@ -176,21 +182,20 @@ watch(queryStringParameter, () => {
             :placeholder="'Select sort'"
             :default-value="queryStringParameter.sort"
             v-model:select-model="queryStringParameter.sort"
-            @on-change="handleChange"
           />
         </div>
       </div>
     </div>
 
-    <Spinner v-if="isLoading" />
-
     <ul
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2"
-      v-if="pokemonResponse?.data.length && !isLoading"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 relative"
+      v-if="pokemonResponse?.data.length"
     >
       <template v-for="pokemon in pokemonResponse?.data" :key="pokemon.id">
         <PokemonCard :poke="pokemon" />
       </template>
+
+      <Spinner v-if="isLoading" class="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-10 w-full h-full rounded-md" />
     </ul>
 
     <Pagination
