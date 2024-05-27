@@ -26,7 +26,6 @@ const getPokemon = async () => {
   try {
     const res = await PokemonApi.show<PokeType>(String(props.pokemon.number));
     pokemonDetail.value = res;
-    console.log(res);
   } catch (error) {
     console.log(error);
   } finally {

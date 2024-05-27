@@ -188,17 +188,20 @@ watch(
     </div>
 
     <ul
-      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2 relative"
-      v-if="pokemonResponse?.data.length"
+      class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-2"
     >
       <template v-for="pokemon in pokemonResponse?.data" :key="pokemon.id">
         <PokemonCard :poke="pokemon" />
       </template>
-
-      <Spinner v-if="isLoading" class="absolute top-0 left-0 right-0 bottom-0 bg-black bg-opacity-10 w-full h-full rounded-md" />
     </ul>
 
+    <Spinner
+      v-if="isLoading"
+      class="fixed top-0 left-0 right-0 bottom-0 bg-black bg-opacity-10 w-full h-full"
+    />
+
     <Pagination
+      v-if="pokemonResponse?.data.length"
       :total="pokemonResponse?.meta.total"
       :page-size="queryStringParameter['page[size]']"
       v-model:page-number="queryStringParameter['page[number]']"

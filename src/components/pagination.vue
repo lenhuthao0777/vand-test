@@ -27,7 +27,7 @@ const pages = computed(() => {
     if (
       i === 1 ||
       i === totalPage.value ||
-      (i <= props.pageNumber + 2 && i >= props.pageNumber - 2)
+      (i <= props.pageNumber + 1 && i >= props.pageNumber - 1)
     ) {
       ans.push(i);
     }
@@ -56,11 +56,11 @@ const handleChange = (action: string, value?: number | string) => {
 </script>
 
 <template>
-  <ul class="flex items-center justify-end space-x-4 mt-5">
+  <ul class="flex items-center justify-end space-x-2 sm:space-x-3 md:space-x-4 mt-5">
     <li>
       <button
         @click="handleChange('prev')"
-        class="disabled:bg-gray-500 disabled:cursor-not-allowed rounded-md hover:bg-gray-300 flex items-center justify-center w-8 h-8 text-xs sm:w-10 sm:h-10 md:w-12 md:h-12 md:text-sm"
+        class="disabled:bg-gray-300 disabled:cursor-not-allowed rounded-md hover:bg-gray-300 flex items-center justify-center w-8 h-8 text-xs sm:w-10 sm:h-10 md:w-12 md:h-12 md:text-sm"
         :disabled="props.pageNumber === 1"
       >
         <ChevronLeft class="w-4 h-4" />
@@ -85,7 +85,7 @@ const handleChange = (action: string, value?: number | string) => {
     <li>
       <button
         @click="handleChange('next')"
-        class="disabled:bg-gray-500 disabled:cursor-not-allowed px-2 py-1 rounded-md hover:bg-gray-300 flex items-center justify-center w-8 h-8 text-xs sm:w-10 sm:h-10 md:w-12 md:h-12 md:text-sm"
+        class="disabled:bg-gray-300 disabled:cursor-not-allowed px-2 py-1 rounded-md hover:bg-gray-300 flex items-center justify-center w-8 h-8 text-xs sm:w-10 sm:h-10 md:w-12 md:h-12 md:text-sm"
         :disabled="props.pageNumber == totalPage"
       >
         <ChevronRight class="w-4 h-4" />
