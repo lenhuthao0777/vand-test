@@ -9,22 +9,27 @@ import { removeEmptyValues } from '../utils';
 import PokemonCard from './pokemon-card.vue';
 import SelectComp from './common/select.vue';
 import Spinner from './common/spinner.vue';
+import Pagination from './pagination.vue';
+
+type QueryStringParameter = {
+  'page[size]'?: number;
+  'page[number]'?: number;
+  sort?: string;
+  'filter[type]'?: string;
+};
+
 const pokemonResponse = ref<Pokemons>();
 
-const queryStringParameter = reactive<{
-  'page[size]': string;
-  'page[number]': string;
-  sort: string;
-  'filter[type]': string;
-}>({
-  'page[size]': '10',
-  'page[number]': '1',
+const queryStringParameter = reactive<QueryStringParameter>({
+  'page[size]': 10,
+  'page[number]': 1,
   sort: 'number',
   'filter[type]': '',
 });
 const types = ref<Array<PokemonType>>();
 
 const isLoading = ref(true);
+
 const isLoadingType = ref(true);
 
 const getPokemons = async () => {
@@ -53,15 +58,6 @@ const getPokemonType = async () => {
     isLoadingType.value = false;
   }
 };
-
-// const getPokemon = async () => {
-//   try {
-//     const res = await PokemonApi.show('720');
-//     console.log(res);
-//   } catch (error) {
-//     console.log(error);
-//   }
-// };
 
 onMounted(() => {
   getPokemons();
@@ -148,6 +144,10 @@ const sortSelect = [
   },
 ];
 
+const handleChange = () => {
+  queryStringParameter['page[number]'] = 1;
+};
+
 watch(queryStringParameter, () => {
   getPokemons();
 });
@@ -158,31 +158,25 @@ watch(queryStringParameter, () => {
     <div class="mb-5">
       <div class="w-full flex items-center justify-end space-x-5 mt-5">
         <div class="w-72 flex items-center space-x-2">
-          <label class="text-sm text-gray-500">Type</label>
+          <label class="text-xs sm:text-sm text-gray-500">Type</label>
           <SelectComp
             :options="typesSelect"
             :placeholder="'Select type'"
             :default-value="queryStringParameter['filter[type]']"
             :is-loading="isLoadingType"
-            @update:select-model="
-              (value) => {
-                queryStringParameter['filter[type]'] = value;
-              }
-            "
+            v-model:select-model="queryStringParameter['filter[type]']"
+            @on-change="handleChange"
           />
         </div>
 
         <div class="w-72 flex items-center space-x-2">
-          <label class="text-sm text-gray-500">Sort</label>
+          <label class="text-xs sm:text-sm text-gray-500">Sort</label>
           <SelectComp
             :options="sortSelect"
             :placeholder="'Select sort'"
             :default-value="queryStringParameter.sort"
-            @update:select-model="
-              (value) => {
-                queryStringParameter.sort = value;
-              }
-            "
+            v-model:select-model="queryStringParameter.sort"
+            @on-change="handleChange"
           />
         </div>
       </div>
@@ -198,5 +192,11 @@ watch(queryStringParameter, () => {
         <PokemonCard :poke="pokemon" />
       </template>
     </ul>
+
+    <Pagination
+      :total="pokemonResponse?.meta.total"
+      :page-size="queryStringParameter['page[size]']"
+      v-model:page-number="queryStringParameter['page[number]']"
+    />
   </section>
 </template>

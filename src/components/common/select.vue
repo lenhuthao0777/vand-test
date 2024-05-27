@@ -24,7 +24,7 @@ let selectModel = reactive<Options>({
   value: '',
 });
 
-const emit = defineEmits<{ (e: 'update:selectModel', value: string): void }>();
+const emits = defineEmits(['update:selectModel', 'onChange']);
 
 const handleClick = () => {
   isOpenSelect.value = !isOpenSelect.value;
@@ -34,6 +34,7 @@ const handleSelect = (values: Options) => {
   selectModel.label = values.label;
   selectModel.value = values.value;
   isOpenSelect.value = false;
+  emits('onChange');
 };
 
 const handleClickOutside = (event: any) => {
@@ -51,7 +52,7 @@ onUnmounted(() => {
 });
 
 watch(selectModel, (values) => {
-  emit('update:selectModel', values.value);
+  emits('update:selectModel', values.value);
 });
 
 watch(
@@ -74,7 +75,7 @@ const getLabelFromOption = computed(() => {
   <div class="relative w-full" ref="inSideRef">
     <button
       v-on:click="handleClick"
-      class="flex items-center justify-between px-3 py-1 border border-gray-300 rounded-md text-sm w-full"
+      class="flex items-center justify-between px-3 py-1 border border-gray-300 rounded-md text-xs sm:text-sm w-full"
     >
       <span
         v-if="getLabelFromOption?.label && !props.isLoading"
@@ -107,7 +108,7 @@ const getLabelFromOption = computed(() => {
         <template v-for="itemSelect in props.options" :key="itemSelect.id">
           <li
             v-on:click="handleSelect(itemSelect)"
-            class="hover:bg-gray-100 transition cursor-pointer text-sm text-gray-700 px-2"
+            class="hover:bg-gray-100 transition cursor-pointer text-xs sm:text-sm text-gray-700 px-2"
             :class="selectModel.value === itemSelect.value && 'bg-gray-200'"
           >
             {{ itemSelect.label }}

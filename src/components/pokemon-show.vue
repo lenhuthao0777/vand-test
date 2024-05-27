@@ -34,6 +34,39 @@ const getPokemon = async () => {
   }
 };
 
+const spriteDownload = async (id?: string, name?: string) => {
+  const res = await fetch(
+    `https://api.vandvietnam.com/api/pokemon-api/pokemons/${id}/sprite`,
+    { method: 'GET' }
+  );
+
+  const blob = await res.blob();
+
+  const blobUrl = URL.createObjectURL(blob);
+
+  console.log(blobUrl);
+
+  const link = document.createElement('a');
+
+  link.href = blobUrl;
+
+  name && (link.download = name);
+
+  document.body.appendChild(link);
+
+  link.dispatchEvent(
+    new MouseEvent('click', {
+      bubbles: true,
+      cancelable: true,
+      view: window,
+    })
+  );
+
+  URL.revokeObjectURL(link as any);
+
+  document.body.removeChild(link);
+};
+
 onMounted(() => {
   getPokemon();
 });
@@ -43,7 +76,7 @@ onMounted(() => {
   <Modal :modal-active="!!modalActive" :is-loading="isLoading">
     <div
       v-if="!isLoading"
-      class="rounded-t-md relative max-w-96 w-96"
+      class="rounded-t-md relative max-w-96 w-80 sm:w-96"
       :style="{
         backgroundColor: color,
       }"
@@ -99,6 +132,15 @@ onMounted(() => {
             <tr>
               <th class="w-40 text-sm font-extrabold">Speed Defense:</th>
               <td class="font-semibold">{{ props.pokemon.sp_def }}</td>
+            </tr>
+            <tr>
+              <th class="w-40 text-sm font-extrabold">Image:</th>
+              <td
+                class="font-semibold underline hover:text-blue-500 transition"
+                @click="spriteDownload(props.pokemon.id, props.pokemon.name)"
+              >
+                Download
+              </td>
             </tr>
           </tbody>
         </table>

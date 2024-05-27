@@ -3,7 +3,7 @@
     <nav>
       <div class="flex items-center">
         <img src="../assets/pokemonbox.svg" alt="" class="w-10 mr-3" />
-        <h2 class="text-2xl font-extrabold text-white">PokeBox</h2>
+        <h2 class="text-2xl font-extrabold text-white">PokemonBox</h2>
       </div>
     </nav>
   </header>
